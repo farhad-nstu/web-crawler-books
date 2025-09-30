@@ -1,0 +1,13 @@
+aiohttp
+httpx
+beautifulsoup4
+lxml
+pydantic
+pymongo
+fastapi
+uvicorn[standard]
+apscheduler
+python-dotenv
+slowapi        # For rate limiting
+pytest
+pytest-asyncio
