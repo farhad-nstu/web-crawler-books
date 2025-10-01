@@ -1,0 +1,18 @@
+{
+  "name": "Get All Books",
+  "request": {
+    "method": "GET",
+    "header": [
+      {
+        "key": "X-API-Key",
+        "value": "{{API_KEY}}",
+        "type": "text"
+      }
+    ],
+    "url": {
+      "raw": "{{BASE_URL}}/api/books",
+      "host": ["{{BASE_URL}}"],
+      "path": ["api", "books"]
+    }
+  }
+}
