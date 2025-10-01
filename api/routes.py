@@ -1,9 +1,14 @@
-from fastapi import APIRouter, Query, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from crawler.storage import books_collection, changes_collection
+from .auth import get_api_key
+from slowapi.util import get_remote_address
+from slowapi import Limiter
 
-router = APIRouter()
+limiter = Limiter(key_func=get_remote_address)
+router = APIRouter(dependencies=[Depends(get_api_key)])
 
 @router.get("/books")
+@limiter.limit("20/minute")   # ✅ only 20 requests/minute per client
 def list_books(category: str = None, min_price: float = 0, max_price: float = 9999,
                rating: int = None, sort_by: str = "price_incl_tax", page: int = 1, limit: int = 10):
     query = {"price_incl_tax": {"$gte": min_price, "$lte": max_price}}
