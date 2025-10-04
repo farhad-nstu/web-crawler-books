@@ -1,5 +1,5 @@
 from fastapi import Security, HTTPException, status
-from fastapi.security.api_key import APIKeyHeader, APIKey
+from fastapi.security.api_key import APIKeyHeader
 from fastapi.openapi.models import APIKey as APIKeyModel, APIKeyIn
 import os
 from dotenv import load_dotenv
@@ -23,9 +23,9 @@ async def get_api_key(api_key: str = Security(api_key_header)):
 # Swagger docs support
 def get_openapi_security_scheme():
     return {
-        "apiKeyAuth": APIKeyModel(
-            type="apiKey",
-            name=API_KEY_NAME,
-            in_=APIKeyIn.header
-        ).dict()
+        "apiKeyAuth": {
+            "type": "apiKey",
+            "name": API_KEY_NAME,
+            "in": APIKeyIn.header.value,
+        }
     }

@@ -1,3 +1,21 @@
+# services:
+#   api:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile.api
+#     container_name: webcrawler_api
+#     ports:
+#       - "8000:8000"
+#     volumes:
+#       - ./api:/app/api
+#     environment:
+#       - PYTHONUNBUFFERED=1
+#     depends_on: []
+
+
+
+version: "3.9"
+
 services:
   api:
     build:
@@ -7,7 +25,55 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./api:/app/api
-    environment:
-      - PYTHONUNBUFFERED=1
-    depends_on: []
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+      - redis
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.scheduler
+    container_name: webcrawler_worker
+    command: ["celery", "-A", "app.scheduler.celery_app", "worker", "--loglevel=info"]
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+      - redis
+
+  beat:
+    build:
+      context: .
+      dockerfile: Dockerfile.scheduler
+    container_name: webcrawler_beat
+    command: ["celery", "-A", "app.scheduler.celery_app", "beat", "--loglevel=info"]
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+      - redis
+
+  mongo:
+    image: mongo:6
+    container_name: webcrawler_mongo
+    restart: always
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  redis:
+    image: redis:7
+    container_name: webcrawler_redis
+    ports:
+      - "6380:6379"
+
+volumes:
+  mongo_data:
