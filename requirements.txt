@@ -11,3 +11,7 @@ python-dotenv
 slowapi        # For rate limiting
 pytest
 pytest-asyncio
+Django>=4.2,<5
+psycopg2-binary>=2.9
+requests
+celery
