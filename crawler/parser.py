@@ -27,7 +27,7 @@ async def parse_book_page(html, session):
             description=desc.text if desc else None,
             category=category,
             price_incl_tax=float(price_incl),
-            price_excl_tax=float(price_incl),  # adjust if needed
+            price_excl_tax=float(price_incl),
             availability=availability,
             num_reviews=0,
             image_url="https://books.toscrape.com/" + book_div.img["src"].replace("../", ""),

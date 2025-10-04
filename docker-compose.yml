@@ -1,21 +1,4 @@
-# services:
-#   api:
-#     build:
-#       context: .
-#       dockerfile: Dockerfile.api
-#     container_name: webcrawler_api
-#     ports:
-#       - "8000:8000"
-#     volumes:
-#       - ./api:/app/api
-#     environment:
-#       - PYTHONUNBUFFERED=1
-#     depends_on: []
-
-
-
-version: "3.9"
-
+# docker-compose.yml
 services:
   api:
     build:
@@ -23,7 +6,7 @@ services:
       dockerfile: Dockerfile.api
     container_name: webcrawler_api
     ports:
-      - "8000:8000"
+      - "8000:8000"       # FastAPI port
     volumes:
       - .:/app
     env_file:
@@ -37,7 +20,7 @@ services:
       context: .
       dockerfile: Dockerfile.scheduler
     container_name: webcrawler_worker
-    command: ["celery", "-A", "app.scheduler.celery_app", "worker", "--loglevel=info"]
+    command: celery -A app.scheduler.celery_app worker --loglevel=info
     volumes:
       - .:/app
     env_file:
@@ -51,7 +34,7 @@ services:
       context: .
       dockerfile: Dockerfile.scheduler
     container_name: webcrawler_beat
-    command: ["celery", "-A", "app.scheduler.celery_app", "beat", "--loglevel=info"]
+    command: celery -A app.scheduler.celery_app beat --loglevel=info
     volumes:
       - .:/app
     env_file:
